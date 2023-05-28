@@ -69,8 +69,9 @@ class TernarySearchTree:
             return self._prefix_search(self.root_node, string, 0)
 
     def _search(self, node, string, position):
-        # If the current node is None, the string does not exist in the tree
-        if node is None:
+        # If the current node is None, the string does not exist in the tree, return False
+        # If current position does not exist in string, return False
+        if node is None or position > len(string) - 1:
             return False
 
         # If the current character is smaller than the node's value, search in
@@ -82,8 +83,8 @@ class TernarySearchTree:
         if string[position] > node.value:
             return self._search(node.right_node, string, position)
         # If we reach the last character of the string and the node is marked
-        # as terminal, the string is found
-        if position == len(string) - 1 and node.is_terminal:
+        # as terminal and same as current node value, the string is found
+        if position == len(string) - 1 and node.is_terminal and node.value == string[position]:
             return True
         # Otherwise, current character is equal to the node's value,
         # continue searching in the middle subtree for the next character
