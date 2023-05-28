@@ -20,6 +20,7 @@ class TernarySearchTree:
 
     def __init__(self):
         self.root_node = None
+        self.empty_string_present = False
 
     def create_node(self, value):
         # Create a new node with the given value
@@ -27,8 +28,10 @@ class TernarySearchTree:
         return node
 
     def insert(self, string):
-        # Start the recursive insertion from the root node
-        self.root_node = self._insert_recursive(self.root_node, string, 0)
+        if string == '':
+            self.empty_string_present = True
+        else:
+            self.root_node = self._insert_recursive(self.root_node, string, 0)
 
     def _insert_recursive(self, node, string, position):
         # If current node is None, create a new node with the current character
@@ -61,11 +64,21 @@ class TernarySearchTree:
         return node
 
     def search(self, string, exact=False):
+        # If search string is empty and empty string is present in tree, return True
+
         # If exact is True, perform an exact search starting from the root node
         if exact:
+            if string == '' and self.empty_string_present:
+                return True
+            elif string == '':
+                return False
             return self._search(self.root_node, string, 0)
-         # If exact is False, perform a prefix search starting from the root node
+        # If exact is False, perform a prefix search starting from the root node
         else:
+            # If the prefix string is an empty string, return True, empty string is prefix
+            # for every string
+            if string == '':
+                return True
             return self._prefix_search(self.root_node, string, 0)
 
     def _search(self, node, string, position):
@@ -94,12 +107,6 @@ class TernarySearchTree:
         # If the current node is None, the prefix string does not exist in the tree
         if node is None:
             return False
-        # print(node.value,prefix[position])
-
-        # If the prefix string is an empty string, return all the strings in
-        # the tree
-        if prefix == "":
-            return self.get_all_strings()
 
         # If the current character is smaller than the node's value, search in
         # the left subtree
@@ -123,7 +130,13 @@ class TernarySearchTree:
             return self._prefix_search(node.middle_node, prefix, position + 1)
 
     def all_strings(self):
-        return self._all_strings(self.root_node)
+        # Start recursive function for identification of all strings at root node
+        strings_in_tree = self._all_strings(self.root_node)
+
+        # If empty string is present in the tree, add this to list
+        if self.empty_string_present:
+            strings_in_tree.append('')
+        return strings_in_tree
 
     def _all_strings(self, node, prefix="", strings=None):
         # If strings is not provided, initialize an empty list
@@ -154,7 +167,13 @@ class TernarySearchTree:
         return self.count_strings()
 
     def count_strings(self):
-        return self._count_strings(self.root_node)
+        # Start recursive function for countering strings at root node
+        count_in_tree = self._count_strings(self.root_node)
+
+        # If empty string is present in the tree, increase count with 1
+        if self.empty_string_present:
+            count_in_tree += 1
+        return count_in_tree
 
     def _count_strings(self, node):
         # If the current node is None, there are no node to find terminal,
